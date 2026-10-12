@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-10-12",
+  "manifest_scope": "All package files except manifest.json.",
+  "files": [
+    {
+      "path": "app.js",
+      "bytes": 21009,
+      "sha256": "7b402d35e734a83c6299273a1f9379aadcba6232ac65427db7edd9f790487b1e"
+    },
+    {
+      "path": "index.html",
+      "bytes": 10807,
+      "sha256": "021e8a38fbf560886714dd22d79212848ec302724dc0b9f98067ca271e4b2951"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1067,
+      "sha256": "0e83e2699acb1207aa2ad916637d211755d259e8cf803dc49e83c0ddc8e5e832"
+    },
+    {
+      "path": "media/alexa_chiploop_demo.mp4",
+      "bytes": 1803545,
+      "sha256": "db293fcb6428e4c11960b8b6400c78753e6e1610c3f124424b2b8a3d8f03b6b8"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4347,
+      "sha256": "810c6e7f4967ab7051c7e1cc9d56cfdb3b4f60cad155a310c721aea26dcbfef4"
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Alexa+ simulated local experience for the synthetic ChipLoop experiment-design demo">
+  <title>Alexa+ × ChipLoop — local simulation</title>
+  <style>
+    :root {
+      --ink: #17263b;
+      --muted: #617089;
+      --line: #dbe4ef;
+      --surface: #ffffff;
+      --wash: #f3f7fb;
+      --navy: #1a2b4a;
+      --blue: #2677c9;
+      --cyan: #dff3f5;
+      --amber: #fff1d7;
+      --amber-ink: #8a5b13;
+      --green: #e3f5eb;
+      --green-ink: #246b44;
+      --shadow: 0 12px 30px rgba(28, 50, 77, .08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--wash); font: 15px/1.55 "Segoe UI", system-ui, sans-serif; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .topbar { background: var(--navy); color: #fff; padding: 20px max(20px, calc((100% - 1120px) / 2)); }
+    .topbar-inner { display: flex; gap: 24px; align-items: center; justify-content: space-between; }
+    .brand { letter-spacing: -.02em; font-size: 22px; font-weight: 750; }
+    .brand small { display: block; color: #b8cae2; font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+    .topbar-note { color: #d8e4f4; font-size: 12px; text-align: right; }
+    main { width: min(1120px, calc(100% - 32px)); margin: 30px auto 48px; }
+    .hero { display: flex; gap: 24px; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+    h1, h2, p { margin-top: 0; }
+    h1 { margin-bottom: 8px; font-size: clamp(25px, 4vw, 38px); letter-spacing: -.04em; line-height: 1.12; }
+    h2 { margin-bottom: 12px; font-size: 18px; letter-spacing: -.015em; }
+    .lede { max-width: 700px; color: var(--muted); font-size: 16px; }
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .badge { display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 999px; background: var(--green); color: var(--green-ink); font-size: 12px; font-weight: 700; }
+    .badge.synthetic { background: var(--amber); color: var(--amber-ink); }
+    .badge.local { background: var(--cyan); color: #1a6872; }
+    .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 24px; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr); gap: 20px; align-items: start; }
+    .assistant-panel { min-height: 500px; }
+    .prompt-form { display: flex; gap: 9px; margin-bottom: 13px; }
+    .prompt-form input { min-width: 0; flex: 1; border: 1px solid #bfcddd; border-radius: 10px; padding: 12px 13px; color: var(--ink); background: #fbfdff; }
+    .prompt-form input:focus { outline: 3px solid rgba(38,119,201,.16); border-color: var(--blue); }
+    .primary { border: 1px solid var(--navy); border-radius: 10px; background: var(--navy); color: #fff; padding: 11px 16px; font-weight: 700; }
+    .secondary { border: 1px solid var(--line); border-radius: 9px; background: #fff; color: var(--ink); padding: 8px 11px; }
+    .secondary:hover, .quick:hover { border-color: var(--blue); color: var(--blue); }
+    .quick-label { color: var(--muted); font-size: 12px; margin: 5px 0 7px; }
+    .quick-list { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 18px; }
+    .quick { border: 1px solid var(--line); border-radius: 999px; background: #fff; color: #355170; padding: 6px 10px; font-size: 12px; }
+    .response { border: 1px solid #cfdae7; border-radius: 14px; background: #fafdff; padding: 19px; min-height: 230px; }
+    .response-head { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+    .avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--blue); color: white; font-weight: 800; }
+    .response-title { font-weight: 750; }
+    .response small { color: var(--muted); }
+    .response-body { margin: 13px 0; font-size: 16px; }
+    .response-body strong { color: var(--navy); }
+    .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0 0; }
+    .detail { border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: #fff; }
+    .detail span { display: block; color: var(--muted); font-size: 11px; }
+    .detail strong { display: block; margin-top: 2px; font-size: 16px; }
+    .response-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+    .side-stack { display: grid; gap: 20px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+    .stat { border-radius: 11px; background: #f3f7fb; padding: 13px; }
+    .stat strong { display: block; font-size: 25px; line-height: 1.1; }
+    .stat span { color: var(--muted); font-size: 11px; }
+    .meter { height: 8px; overflow: hidden; border-radius: 999px; background: #e3ebf3; margin-top: 12px; }
+    .meter span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--blue); transition: width .25s ease; }
+    .note { color: var(--muted); font-size: 12px; }
+    .audit { max-height: 180px; overflow: auto; margin: 0; padding: 0; list-style: none; font: 12px/1.65 Consolas, monospace; }
+    .audit li { border-bottom: 1px solid #edf1f5; padding: 6px 0; }
+    .audit li:first-child { color: var(--navy); font-weight: 700; }
+    .footer { display: flex; justify-content: space-between; gap: 18px; margin-top: 22px; color: var(--muted); font-size: 12px; }
+    .footer a { color: var(--blue); }
+    @media (max-width: 840px) { .workspace { grid-template-columns: 1fr; } .side-stack { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 620px) { .topbar-inner, .hero, .footer { display: block; } .topbar-note { margin-top: 8px; text-align: left; } .prompt-form { display: grid; grid-template-columns: 1fr auto; } .side-stack { grid-template-columns: 1fr; } .detail-grid { grid-template-columns: 1fr 1fr; } main { width: min(100% - 20px, 1120px); margin-top: 18px; } .panel { padding: 17px; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">Alexa+ × ChipLoop<small>local simulated voice path</small></div>
+      <div class="topbar-note">Text input → deterministic local scorer → concise assistant reply</div>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <div>
+        <h1>Ask for the next experiment condition.</h1>
+        <p class="lede">This small Alexa+ style experience routes a natural-language request to a local ChipLoop-inspired risk and recommendation function. It is a reviewable synthetic demonstration that runs without an account, API key, network call, or real device.</p>
+        <div class="badges" aria-label="Evidence status">
+          <span class="badge synthetic">SYNTHETIC DEMO</span>
+          <span class="badge local">LOCAL ONLY</span>
+          <span class="badge">CLINICAL / PHYSICAL VALIDATION: NOT RUN</span>
+          <span class="badge">EXTERNAL SUBMISSION: NOT SUBMITTED</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <section class="panel assistant-panel" aria-labelledby="assistant-title">
+        <h2 id="assistant-title">Alexa+ simulated assistant</h2>
+        <form class="prompt-form" id="prompt-form">
+          <label for="prompt" class="sr-only" style="position:absolute;left:-10000px">Natural-language request</label>
+          <input id="prompt" name="prompt" autocomplete="off" placeholder="Try: What should I test next?" aria-describedby="prompt-help">
+          <button class="primary" type="submit">Ask</button>
+        </form>
+        <div id="prompt-help" class="quick-label">Quick requests</div>
+        <div class="quick-list" aria-label="Example requests">
+          <button class="quick" type="button" data-prompt="What should I test next?">Recommend a next condition</button>
+          <button class="quick" type="button" data-prompt="What is the risk of the recommendation?">Check risk</button>
+          <button class="quick" type="button" data-prompt="How does this ChipLoop demo work?">Explain the path</button>
+          <button class="quick" type="button" data-prompt="What is the session status?">Session status</button>
+          <button class="quick" type="button" data-prompt="Simulate observing C042">Simulate C042</button>
+        </div>
+        <article id="response" class="response" aria-live="polite">
+          <div class="response-head"><div class="avatar" aria-hidden="true">A</div><div><div class="response-title">Ready for a local request</div><small>Synthetic response · review required</small></div></div>
+          <p class="response-body">Ask about a next condition, risk, status, or how the simulated path works. Every answer is labeled as synthetic and non-clinical.</p>
+        </article>
+        <div class="response-actions">
+          <button class="secondary" id="speak" type="button">Speak response (browser)</button>
+          <button class="secondary" id="export" type="button">Export session JSON</button>
+          <button class="secondary" id="reset" type="button">Reset demo</button>
+        </div>
+      </section>
+
+      <aside class="side-stack">
+        <section class="panel" aria-labelledby="status-title">
+          <h2 id="status-title">Synthetic session</h2>
+          <div class="stat-grid">
+            <div class="stat"><strong id="observed">0</strong><span>observed conditions</span></div>
+            <div class="stat"><strong id="remaining">0</strong><span>available candidates</span></div>
+            <div class="stat"><strong id="cap">0.35</strong><span>toxicity cap</span></div>
+            <div class="stat"><strong id="version">v1</strong><span>local path</span></div>
+          </div>
+          <div class="meter" aria-label="Synthetic observation budget"><span id="meter"></span></div>
+          <p class="note" id="meter-note">A simulated update adds one synthetic observation to this browser session.</p>
+        </section>
+        <section class="panel" aria-labelledby="audit-title">
+          <h2 id="audit-title">Audit trail</h2>
+          <ul id="audit" class="audit"><li>Loaded local synthetic snapshot.</li></ul>
+          <p class="note" style="margin-bottom:0">The log is editable browser state. It is not a platform receipt.</p>
+        </section>
+      </aside>
+    </div>
+
+    <div class="footer">
+      <span>Alexa+ simulated path · ChipLoop-inspired deterministic adapter · MIT licensed</span>
+      <span><a href="README.md">README</a> · <a href="demo_script.md">demo script</a> · <a href="submission_text.md">draft text</a></span>
+    </div>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>
